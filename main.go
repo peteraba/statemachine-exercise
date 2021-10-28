@@ -138,6 +138,7 @@ func (sm *StateMachine) State() State {
 }
 
 // Transition attempts to transition the StateMachine into a new State
+// The transition is only allowed if there's a rule which allows it
 func (sm *StateMachine) Transition(to State, params ...interface{}) error {
 	sm.final = true
 
@@ -202,24 +203,31 @@ func main() {
 	fmt.Println("[add rule]", sm.AddRule(NewSimpleTransitionRule(i, b)))
 	fmt.Println("[add rule]", sm.AddRule(NewConditionalTransitionRule(b, p, equalIntegers)))
 	fmt.Println("[state]", sm.State())
+
 	// Transition to non-existent state (Initial -> Canceled)
 	fmt.Println("[transition]", sm.Transition(c))
 	fmt.Println("[state]", sm.State())
+
 	// Transition without passing rule (Initial -> Progress)
 	fmt.Println("[transition]", sm.Transition(p))
 	fmt.Println("[state]", sm.State())
+
 	// Transition with passing simple rule (Initial -> Backlog)
 	fmt.Println("[transition]", sm.Transition(b))
 	fmt.Println("[state]", sm.State())
+
 	// Transition with non-passing complex rule (Backlog -> Progress)
 	fmt.Println("[transition]", sm.Transition(p))
 	fmt.Println("[state]", sm.State())
+
 	// Transition with non-passing complex rule II. (Backlog -> Progress)
 	fmt.Println("[transition]", sm.Transition(p, 10, 15))
 	fmt.Println("[state]", sm.State())
+
 	// Transition with non-passing complex rule III. (Backlog -> Progress)
 	fmt.Println("[transition]", sm.Transition(p, 10.0, 10))
 	fmt.Println("[state]", sm.State())
+
 	// Transition with passing complex rule (Backlog -> Progress)
 	fmt.Println("[transition]", sm.Transition(p, 10, 10))
 	fmt.Println("[state]", sm.State())
